@@ -2,6 +2,12 @@ var env = require('node-env-file');
 env(__dirname + '/.env');
 var moment = require('moment');
 moment().format();
+var moment = require('moment-timezone');
+moment().tz("America/New_York").format();
+
+
+
+
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   // usage_tip();
@@ -116,14 +122,18 @@ if (!process.env.clientId || !process.env.clientSecret) {
 
 // Timekeeping Controller & Logic
 controller.on('slash_command',function(bot,message) {
-
+  
+  var clockedIn = new Boolean(0);
+  
   switch(message.command) {
     case "/clockin":
-      bot.replyPrivate(message, "testing clockIN feature");
+        var now = moment().tz("America/New_York").format('LT');
+        bot.replyPrivate(message, "Oh! Kind person, I have written down your time to start at: " + now + ".");
+        clockedIn = true;
       break;
 
     case "/clockout":
-      bot.replyPrivate(message, 'test clockOUT feature');
+      bot.replyPrivate(message, 'testing clockout feature');
       break;
 
     case "/timereport":
@@ -137,8 +147,6 @@ controller.on('slash_command',function(bot,message) {
   }
 });
 
-var now = moment();
-Console.log('now');
 
 
 
