@@ -148,14 +148,152 @@ controller.on('slash_command',function(bot,message) {
 });
 
 
+// controller.hears('menu', 'direct_message', function(bot, message) {
+//     bot.reply(message, {
+//         "attachments": [
+//                             {
+//                                 "color": "#8cd5f0",
+//                                 "callback_id": "timekeeping",
+//                                 "actions": [
+//                                     {
+//                                         "style": "primary",
+//                                         "type": "button",
+//                                         "value": "0",
+//                                         "name": "button",
+//                                         "text": "Clock In"
+//                                     },
+//                                     {
+//                                         "style": "default",
+//                                         "type": "button",
+//                                         "value": "1",
+//                                         "name": "button",
+//                                         "text": "Generate Report"
+//                                     },
+//                                     {
+//                                         "style": "danger",
+//                                         "type": "button",
+//                                         "value": "2",
+//                                         "name": "button",
+//                                         "text": "Clock Out"
+//                                     }
+//                                 ],
+//                                 "fields": [],
+//                                 "text": "Select an option",
+//                                 "title": "What would you like to do?",
+//                                 "footer": "v0.1",
+//                                 "fallback": "",
+//                                 "title_link": ""
+//                             }
+//                         ]
+//     });
+// });
 
 
-// function usage_tip() {
-//     console.log('~~~~~~~~~~');
-//     console.log('Botkit Starter Kit');
-//     console.log('Execute your bot application like this:');
-//     console.log('clientId=<MY SLACK CLIENT ID> clientSecret=<MY CLIENT SECRET> PORT=3000 studio_token=<MY BOTKIT STUDIO TOKEN> node bot.js');
-//     console.log('Get Slack app credentials here: https://api.slack.com/apps')
-//     console.log('Get a Botkit Studio token here: https://studio.botkit.ai/')
-//     console.log('~~~~~~~~~~');
-// }
+// // receive an interactive message, and reply with a message that will replace the original
+// controller.on('interactive_message_callback', function(bot, message) {
+
+//     // check message.actions and message.callback_id to see what action to take...
+//     var now = moment().tz("America/New_York").format('LT');
+  
+//     bot.replyInteractive(message, {
+        
+//         text: 'Oh! Kind person, I have written down your time to start at: ' + now + '.',
+//         attachments: [
+//             {
+//                 title: 'My buttons',
+//                 callback_id: '123',
+//                 attachment_type: 'default',
+//                 actions: [
+//                     {
+//                         "name":"yes",
+//                         "text": "Yes!",
+//                         "value": "yes",
+//                         "type": "button",
+//                     },
+//                     {
+//                        "text": "No!",
+//                         "name": "no",
+//                         "value": "delete",
+//                         "style": "danger",
+//                         "type": "button",
+//                         "confirm": {
+//                           "title": "Are you sure?",
+//                           "text": "This will do something!",
+//                           "ok_text": "Yes",
+//                           "dismiss_text": "No"
+//                         }
+//                     }
+//                 ]
+//             }
+//         ]
+//     });
+
+// });
+
+
+controller.hears('menu', 'direct_message', function(bot, message) {
+
+   bot.startConversation(message, function(err, convo) {
+
+    convo.ask({
+        "attachments": [
+                            {
+                                "color": "#8cd5f0",
+                                "callback_id": "timekeeping",
+                                "actions": [
+                                    {
+                                        "style": "primary",
+                                        "type": "button",
+                                        "value": "clockIn",
+                                        "name": "clockIn",
+                                        "text": "Clock In"
+                                    },
+                                    {
+                                        "style": "default",
+                                        "type": "button",
+                                        "value": "generateReport",
+                                        "name": "generateReport",
+                                        "text": "Generate Report"
+                                    },
+                                    {
+                                        "style": "danger",
+                                        "type": "button",
+                                        "value": "clockOut",
+                                        "name": "clockOut",
+                                        "text": "Clock Out"
+                                    }
+                                ],
+                                "fields": [],
+                                "text": "Select an option",
+                                "title": "What would you like to do?",
+                                "footer": "v0.1",
+                                "fallback": "",
+                                "title_link": ""
+                            }
+                        ]
+    },[
+        {
+            pattern: "clockIn",
+            callback: function(reply, convo) {
+                var now = moment().tz("America/New_York").format('LT');
+                convo.say('Oh! Kind person, I have written down your time to start at: ' + now + '.');
+                convo.next();
+
+            }
+        },
+        {
+            pattern: "clockOut",
+            callback: function(reply, convo) {
+                convo.say('Too bad');
+                convo.next();
+            }
+        },
+        {
+            default: true,
+            callback: function(reply, convo) {
+                // do nothing
+            }
+        }
+    ]);
+});
+});
