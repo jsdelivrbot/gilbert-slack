@@ -1,12 +1,24 @@
-controller.hears('menu', 'direct_message', function(bot, message) {
+// var moment = require('moment');
+var moment = require('moment-timezone');
+// moment();
+// moment().tz("America/New_York");
+moment.tz("America/New_York")
 
-   bot.startConversation(message, function(err, convo) {
 
-    convo.ask({
-        "attachments": [
+module.exports = function(controller) {
+  
+  var clockedIn;
+  var clockedOut;
+  
+  var currentlyClocked = false;
+  
+  controller.hears('menu', 'direct_message', function(bot, message) {
+
+    bot.reply(message, {
+          "attachments": [
                             {
                                 "color": "#8cd5f0",
-                                "callback_id": "timekeeping",
+                                "callback_id": "user_selection",
                                 "actions": [
                                     {
                                         "style": "primary",
@@ -37,30 +49,91 @@ controller.hears('menu', 'direct_message', function(bot, message) {
                                 "fallback": "",
                                 "title_link": ""
                             }
-                        ]
-    },[
-        {
-            pattern: "clockIn",
-            callback: function(reply, convo) {
-                var now = moment().tz("America/New_York").format('LT');
-                convo.say('Oh! Kind person, I have written down your time to start at: ' + now + '.');
-                convo.next();
+                          ],
+      "text": 'Oh... It is I, Gilbert! Underpaid and very ove- nevermind... Allow me to keep track of your time!',
+    });
+    
+});
+  
+controller.on('interactive_message_callback', function(bot, message) {
+        
+  
+  if(message.callback_id === 'user_selection' && message.actions[0].value.match(/^clockIn$/)) {
+    if(currentlyClocked === false) {
+      clockedIn = moment().tz("America/New_York");
+      
+      currentlyClocked = true;
+      bot.replyInteractive(message, {
+        text: 'Oh! I have written down your time to start at: ' + clockedIn.format("HH:mm A") + '.',
+      });
+    } else {
+        bot.replyInteractive(message, {
+          text: 'You are already clocked in, bloody idiot!',
+        });
+      
+    }
+  }
+  
+    if(message.callback_id === 'user_selection' && message.actions[0].value.match(/^clockOut$/)) {
+      if(currentlyClocked === true) {
+        clockedOut = moment().tz("America/New_York");
+        currentlyClocked = false;
+        
+        var duration = moment.duration(clockedOut.diff(clockedIn));
+        var hours = parseInt(duration.asHours());
+        var minutes = parseInt(duration.asMinutes())%60;
+        
+        var totalTimeWorked = hours + ' hour and '+ minutes+' minutes.';
+  
+        bot.replyInteractive(message, {
+          text: 'You clocked out at: ' + clockedOut.format("HH:mm A") + "." + "You worked for a total of " + totalTimeWorked + " today.",
+        });
+      } else {
+          bot.replyInteractive(message, {
+            text: 'You\'re not currently clocked in!',
+          });
+      }
+  }
+  
+    if(message.callback_id === 'user_selection' && message.actions[0].value.match(/^generateReport$/)) {
+      bot.replyInteractive(message, {
+        text: 'Generating report...bzzT.',
+      });
+      bot.say('fool!');
+  }
+});
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+}
 
-            }
-        },
-        {
-            pattern: "clockOut",
-            callback: function(reply, convo) {
-                convo.say('Too bad');
-                convo.next();
-            }
-        },
-        {
-            default: true,
-            callback: function(reply, convo) {
-                // do nothing
-            }
-        }
-    ]);
-});
-});
+
+
