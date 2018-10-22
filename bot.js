@@ -1,13 +1,5 @@
 var env = require('node-env-file');
 env(__dirname + '/.env');
-var moment = require('moment');
-moment().format();
-var moment = require('moment-timezone');
-moment().tz("America/New_York").format();
-
-
-
-
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   // usage_tip();
@@ -126,19 +118,9 @@ controller.on('slash_command',function(bot,message) {
   var clockedIn = new Boolean(0);
 
   switch(message.command) {
-    case "/clockin":
-        var now = moment().tz("America/New_York").format('LT');
-        bot.replyPrivate(message, "Oh! Kind person, I have written down your time to start at: " + now + ".");
-        clockedIn = true;
-      break;
 
-    case "/clockout":
-      bot.replyPrivate(message, 'testing clockout feature');
-      break;
-
-    case "/timereport":
-      bot.replyPrivate(message, 'generate CSV report');
-      break;
+    case "/dropbox":
+      bot.replyPrivate(message, 'It is best if you keep this data in your head. Allow me to... implant this small chip... Sit tight.');
   }
 
   if (message.text === "help") {

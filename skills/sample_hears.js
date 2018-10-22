@@ -28,35 +28,35 @@ module.exports = function(controller) {
     });
 
 
-    controller.hears(['^uptime','^debug'], 'direct_message,direct_mention', function(bot, message) {
+//     controller.hears(['^uptime','^debug'], 'direct_message,direct_mention', function(bot, message) {
 
-        bot.createConversation(message, function(err, convo) {
-            if (!err) {
-                convo.setVar('uptime', formatUptime(process.uptime()));
-                convo.setVar('convos', stats.convos);
-                convo.setVar('triggers', stats.triggers);
+//         bot.createConversation(message, function(err, convo) {
+//             if (!err) {
+//                 convo.setVar('uptime', formatUptime(process.uptime()));
+//                 convo.setVar('convos', stats.convos);
+//                 convo.setVar('triggers', stats.triggers);
 
-                convo.say('My main process has been online for {{vars.uptime}}. Since booting, I have heard {{vars.triggers}} triggers, and conducted {{vars.convos}} conversations.');
-                convo.activate();
-            }
-        });
+//                 convo.say('My main process has been online for {{vars.uptime}}. Since booting, I have heard {{vars.triggers}} triggers, and conducted {{vars.convos}} conversations.');
+//                 convo.activate();
+//             }
+//         });
 
-    });
+//     });
   
   
 
-    controller.hears(['^say (.*)','^say'], 'direct_message,direct_mention', function(bot, message) {
-        if (message.match[1]) {
+//     controller.hears(['^say (.*)','^say'], 'direct_message,direct_mention', function(bot, message) {
+//         if (message.match[1]) {
 
-            if (!wordfilter.blacklisted(message.match[1])) {
-                bot.reply(message, message.match[1]);
-            } else {
-                bot.reply(message, '_sigh_');
-            }
-        } else {
-            bot.reply(message, 'I will repeat whatever you say.')
-        }
-    });
+//             if (!wordfilter.blacklisted(message.match[1])) {
+//                 bot.reply(message, message.match[1]);
+//             } else {
+//                 bot.reply(message, '_sigh_');
+//             }
+//         } else {
+//             bot.reply(message, 'I will repeat whatever you say.')
+//         }
+//     });
 
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
